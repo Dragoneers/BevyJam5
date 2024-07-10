@@ -4,7 +4,7 @@
 ## Introduction
 
 Welcome to LifeSim Pet Handling Game, a fun and engaging life simulation/pet simulation game. Immerse yourself in a world where you get to be a dragon ฅ^˙Ⱉ˙^ฅ rawr!
-This file contains the plan to all of you dragoneers to adjust and give your opinions. On the features, gameplay elements and customization given.
+This file contains the plan to all of you dragoneers to adjust and give your opinions. Things like ideas for features, gameplay elements, should be put here.
 
 ## Features
 
