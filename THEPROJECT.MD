@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to **LifeSim Pet Handling Game**, a fun and engaging life simulation/pet simulation game, build relationships, and manage your daily activities. Immerse yourself in a world where your decisions shape the life you lead and the bonds you create with your pets.
+Welcome to **LifeSim Pet Handling Game**, a fun and engaging life simulation/pet simulation game, build relationships, and manage your daily activities. Immerse yourself in a world where you get to be a dragon ฅ^˙Ⱉ˙^ฅ rawr!
 
 ## Features
 
