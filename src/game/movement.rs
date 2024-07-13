@@ -5,8 +5,8 @@
 
 use std::time::Duration;
 
-use bevy::prelude::*;
 use crate::camera::InGameCamera;
+use bevy::prelude::*;
 
 use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 
@@ -101,6 +101,6 @@ fn update_camera(
         .translation
         .lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
     camera.scale = Vec3::splat(
-        ((direction.distance_squared(camera.translation) / 100000.0).clamp(0.0, 1.2) + 1.0)*6.,
+        ((direction.distance_squared(camera.translation) / 100000.0).clamp(0.0, 1.2) + 1.0) * 6.,
     );
 }

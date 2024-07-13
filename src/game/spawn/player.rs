@@ -1,8 +1,8 @@
 //! Spawn the player.
 
+use crate::camera::PIXEL_PERFECT_LAYERS;
 use bevy::prelude::*;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
-use crate::camera::PIXEL_PERFECT_LAYERS;
 
 use crate::screen::Screen;
 
