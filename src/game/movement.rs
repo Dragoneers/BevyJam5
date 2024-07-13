@@ -97,4 +97,5 @@ fn update_camera(
     camera.translation = camera
         .translation
         .lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
+    camera.scale = Vec3::splat((direction.distance_squared(camera.translation)/400000.0).clamp(0.0,1.2)+1.0);
 }

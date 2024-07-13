@@ -45,7 +45,7 @@ type_complexity = "allow"
 
 # Enable a small amount of optimization in debug mode.
 [profile.dev]
-opt-level = 1
+opt-level = 2
 
 # Enable a large amount of optimization in debug mode for dependencies.
 [profile.dev.package."*"]
