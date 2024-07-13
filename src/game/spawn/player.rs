@@ -2,6 +2,7 @@
 
 use bevy::prelude::*;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+use crate::camera::PIXEL_PERFECT_LAYERS;
 
 use crate::screen::Screen;
 
@@ -41,5 +42,6 @@ fn spawn_player(
             ..Default::default()
         },
         StateScoped(Screen::Playing),
+        PIXEL_PERFECT_LAYERS,
     ));
 }

@@ -6,6 +6,7 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
+use crate::camera::InGameCamera;
 
 use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 
@@ -30,7 +31,7 @@ const MOVEMENT_SPEED: f32 = 420.0;
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
 
 /// Camera lerp factor.
-const CAM_LERP_FACTOR: f32 = 2.;
+const CAM_LERP_FACTOR: f32 = 3.5;
 
 /// Handle keyboard input to move the player.
 fn handle_player_movement_input(
@@ -74,7 +75,7 @@ fn handle_player_movement_input(
 }
 
 fn update_camera(
-    mut camera: Query<&mut Transform, (With<Camera2d>, Without<Player>)>,
+    mut camera: Query<&mut Transform, (With<InGameCamera>, Without<Player>)>,
     player: Query<&Transform, (With<Player>, Without<Camera2d>)>,
     time: Res<Time>,
 ) {
@@ -85,6 +86,8 @@ fn update_camera(
     let Ok(player) = player.get_single() else {
         return;
     };
+
+    println!("{:?}", player.translation);
 
     let Vec3 { x, y, .. } = player.translation;
     let direction = Vec3::new(x, y, camera.translation.z);
@@ -98,6 +101,6 @@ fn update_camera(
         .translation
         .lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
     camera.scale = Vec3::splat(
-        (direction.distance_squared(camera.translation) / 400000.0).clamp(0.0, 1.2) + 1.0,
+        ((direction.distance_squared(camera.translation) / 100000.0).clamp(0.0, 1.2) + 1.0)*6.,
     );
 }
