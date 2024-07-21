@@ -21,11 +21,13 @@ fn enter_playing(mut commands: Commands) {
     commands.trigger(Soundtrack::Gameplay);
 }
 
-fn exit_playing(mut commands: Commands, mut cameras: Query<&mut Transform, With<Camera>>) {
+fn exit_playing(mut commands: Commands /*mut cameras: Query<&mut Transform, With<Camera>>*/) {
     // TODO: remove, camera is currently stationary
+    /*
     for mut transform in &mut cameras {
         *transform = default();
     }
+    */
 
     // We could use [`StateScoped`] on the sound playing entites instead.
     commands.trigger(Soundtrack::Disable);

@@ -38,10 +38,11 @@ impl Plugin for AppPlugin {
                 })
                 .set(AudioPlugin {
                     global_volume: GlobalVolume {
-                        volume: Volume::new(0.3),
+                        volume: Volume::new(0.05),
                     },
                     ..default()
-                }),
+                })
+                .set(ImagePlugin::default_nearest()),
         );
 
         // Add other plugins.

@@ -12,11 +12,7 @@ use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
-        (
-            handle_player_movement_input.in_set(GameSystem::Movement),
-            update_camera,
-        )
-            .chain(),
+        (handle_player_movement_input.in_set(GameSystem::Movement),).chain(),
     );
 }
 
@@ -28,9 +24,6 @@ const MOVEMENT_SPEED: f32 = 420.0;
 
 /// Time between walk sound effects.
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
-
-/// Camera lerp factor.
-const CAM_LERP_FACTOR: f32 = 2.;
 
 /// Handle keyboard input to move the player.
 fn handle_player_movement_input(
@@ -71,30 +64,4 @@ fn handle_player_movement_input(
         *last_sfx = now;
         commands.trigger(Sfx::Step);
     }
-}
-
-fn update_camera(
-    mut camera: Query<&mut Transform, (With<Camera2d>, Without<Player>)>,
-    player: Query<&Transform, (With<Player>, Without<Camera2d>)>,
-    time: Res<Time>,
-) {
-    let Ok(mut camera) = camera.get_single_mut() else {
-        return;
-    };
-
-    let Ok(player) = player.get_single() else {
-        return;
-    };
-
-    let Vec3 { x, y, .. } = player.translation;
-    let direction = Vec3::new(x, y, camera.translation.z);
-
-    // Applies a smooth effect to camera movement using interpolation between
-    // the camera position and the player position on the x and y axes.
-    // Here we use the in-game time, to get the elapsed time (in seconds)
-    // since the previous update. This avoids jittery movement when tracking
-    // the player.
-    camera.translation = camera
-        .translation
-        .lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
 }

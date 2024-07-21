@@ -1,7 +1,5 @@
 //! Spawn the player.
-
 use bevy::prelude::*;
-use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use crate::screen::Screen;
 
@@ -21,17 +19,7 @@ fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: Mesh2dHandle(meshes.add(Rectangle::new(1000., 700.))),
-        material: materials.add(Color::srgb(0.2, 0.2, 0.3)),
-        transform: Transform::from_translation(Vec3::new(0., 0., -2.)),
-
-        ..default()
-    });
-
     commands.spawn((
         Name::new("Player"),
         Player,
