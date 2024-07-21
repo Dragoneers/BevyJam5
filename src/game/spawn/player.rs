@@ -1,5 +1,7 @@
 //! Spawn the player.
+use bevy::color::palettes::tailwind;
 use bevy::prelude::*;
+use bevy_rapier3d::prelude::*;
 
 use crate::screen::Screen;
 
@@ -18,15 +20,21 @@ pub struct Player;
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    let arm = meshes.add(Cuboid::new(0.1, 0.1, 0.5));
+    let arm_material = materials.add(Color::from(tailwind::TEAL_200));
+
     commands.spawn((
         Name::new("Player"),
         Player,
-        SpriteBundle {
-            texture: asset_server.load("ducky.png"),
-            transform: Transform::from_scale(Vec3::splat(0.5)),
-            ..Default::default()
+        RigidBody::Dynamic,
+        MaterialMeshBundle {
+            mesh: arm,
+            material: arm_material,
+            transform: Transform::from_xyz(0.2, -0.1, -0.25),
+            ..default()
         },
         StateScoped(Screen::Playing),
     ));

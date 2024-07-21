@@ -3,6 +3,7 @@
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/pull/14223).
 
+use crate::camera::InGameCamera;
 use std::time::Duration;
 
 use bevy::prelude::*;
@@ -12,7 +13,11 @@ use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
-        (handle_player_movement_input.in_set(GameSystem::Movement),).chain(),
+        (
+            handle_player_movement_input.in_set(GameSystem::Movement),
+            update_camera,
+        )
+            .chain(),
     );
 }
 
@@ -35,10 +40,10 @@ fn handle_player_movement_input(
 ) {
     let mut intent = Vec3::ZERO;
     if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
-        intent.y += 1.0;
+        intent.z += 1.0;
     }
     if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
-        intent.y -= 1.0;
+        intent.z -= 1.0;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
         intent.x -= 1.0;
@@ -64,4 +69,35 @@ fn handle_player_movement_input(
         *last_sfx = now;
         commands.trigger(Sfx::Step);
     }
+}
+
+fn update_camera(
+    mut camera: Query<&mut Transform, (With<InGameCamera>, Without<Player>)>,
+    player: Query<&Transform, (With<Player>, Without<Camera2d>)>,
+    time: Res<Time>,
+) {
+    let Ok(mut camera) = camera.get_single_mut() else {
+        return;
+    };
+
+    let Ok(player) = player.get_single() else {
+        return;
+    };
+
+    println!("{:?}", player.translation);
+
+    let Vec3 { x, y, .. } = player.translation;
+    let direction = Vec3::new(x, y, camera.translation.z);
+
+    // Applies a smooth effect to camera movement using interpolation between
+    // the camera position and the player position on the x and y axes.
+    // Here we use the in-game time, to get the elapsed time (in seconds)
+    // since the previous update. This avoids jittery movement when tracking
+    // the player.
+    camera.translation = camera
+        .translation
+        .lerp(direction, time.delta_seconds() * 3.5);
+    camera.scale = Vec3::splat(
+        ((direction.distance_squared(camera.translation) / 100000.0).clamp(0.0, 1.2) + 1.0) * 6.,
+    );
 }
