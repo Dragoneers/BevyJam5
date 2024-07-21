@@ -3,7 +3,6 @@
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/pull/14223).
 
-use crate::camera::InGameCamera;
 use std::time::Duration;
 
 use bevy::prelude::*;
@@ -25,7 +24,10 @@ pub(super) fn plugin(app: &mut App) {
 /// one unit is one pixel, you can think of this as
 /// "How many pixels per second should the player move?"
 /// Note that physics engines may use different unit/pixel ratios.
-const MOVEMENT_SPEED: f32 = 420.0;
+const MOVEMENT_SPEED: f32 = 1.0;
+
+/// Camera lerp factor.
+const CAM_LERP_FACTOR: f32 = 1.5;
 
 /// Time between walk sound effects.
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
@@ -34,16 +36,16 @@ const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
 fn handle_player_movement_input(
     time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<(&mut Transform, &mut Sprite), With<Player>>,
+    mut player_query: Query<&mut Transform, With<Player>>,
     mut last_sfx: Local<Duration>,
     mut commands: Commands,
 ) {
     let mut intent = Vec3::ZERO;
     if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
-        intent.z += 1.0;
+        intent.z -= 1.0;
     }
     if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
-        intent.z -= 1.0;
+        intent.z += 1.0;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
         intent.x -= 1.0;
@@ -56,11 +58,8 @@ fn handle_player_movement_input(
     let intent = intent.normalize_or_zero();
     let target_velocity = intent * MOVEMENT_SPEED;
 
-    for (mut transform, mut sprite) in &mut player_query {
+    for (mut transform) in &mut player_query {
         transform.translation += target_velocity * time.delta_seconds();
-        if intent.x != 0.0 {
-            sprite.flip_x = intent.x < 0.0;
-        }
     }
 
     // If the player is moving, play a step sound effect.
@@ -72,8 +71,8 @@ fn handle_player_movement_input(
 }
 
 fn update_camera(
-    mut camera: Query<&mut Transform, (With<InGameCamera>, Without<Player>)>,
-    player: Query<&Transform, (With<Player>, Without<Camera2d>)>,
+    mut camera: Query<&mut Transform, (With<IsDefaultUiCamera>, Without<Player>)>,
+    player: Query<&Transform, (With<Player>, Without<Camera3d>)>,
     time: Res<Time>,
 ) {
     let Ok(mut camera) = camera.get_single_mut() else {
@@ -86,8 +85,8 @@ fn update_camera(
 
     println!("{:?}", player.translation);
 
-    let Vec3 { x, y, .. } = player.translation;
-    let direction = Vec3::new(x, y, camera.translation.z);
+    let Vec3 { x, y, z } = player.translation;
+    let direction = Vec3::new(x, y + 0.1, z + 1.0);
 
     // Applies a smooth effect to camera movement using interpolation between
     // the camera position and the player position on the x and y axes.
@@ -96,7 +95,7 @@ fn update_camera(
     // the player.
     camera.translation = camera
         .translation
-        .lerp(direction, time.delta_seconds() * 3.5);
+        .lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
     camera.scale = Vec3::splat(
         ((direction.distance_squared(camera.translation) / 100000.0).clamp(0.0, 1.2) + 1.0) * 6.,
     );

@@ -1,7 +1,6 @@
 //! Spawn the player.
 use bevy::color::palettes::tailwind;
 use bevy::prelude::*;
-use bevy_rapier3d::prelude::*;
 
 use crate::screen::Screen;
 
@@ -23,17 +22,16 @@ fn spawn_player(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    let arm = meshes.add(Cuboid::new(0.1, 0.1, 0.5));
+    let arm = meshes.add(Cuboid::new(0.1, 0.1, 1.0));
     let arm_material = materials.add(Color::from(tailwind::TEAL_200));
 
     commands.spawn((
         Name::new("Player"),
         Player,
-        RigidBody::Dynamic,
         MaterialMeshBundle {
             mesh: arm,
             material: arm_material,
-            transform: Transform::from_xyz(0.2, -0.1, -0.25),
+            transform: Transform::from_xyz(0.0, -0.0, -0.0),
             ..default()
         },
         StateScoped(Screen::Playing),
