@@ -870,6 +870,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_registry_export"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d9f3463eaf1556f036f162c4e781a54bfd8857c701f1c06c657cd6f81b1621f"
+dependencies = [
+ "bevy",
+ "bevy_app",
+ "bevy_ecs",
+ "bevy_reflect",
+ "serde_json",
+]
+
+[[package]]
 name = "bevy_render"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1020,6 +1033,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_rapier3d",
+ "bevy_registry_export",
  "log",
  "rand",
 ]
