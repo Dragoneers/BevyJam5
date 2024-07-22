@@ -15,7 +15,7 @@ pub(super) fn play_soundtrack(
             return;
         }
         Soundtrack::Credits => "audio/soundtracks/Monkeys Spinning Monkeys.ogg",
-        Soundtrack::Gameplay => "audio/soundtracks/Fluffing A Duck.ogg",
+        Soundtrack::Gameplay => "audio/soundtracks/amalgam-217007.ogg",
     };
     let source = asset_server.load::<AudioSource>(path);
     let settings = PlaybackSettings {
