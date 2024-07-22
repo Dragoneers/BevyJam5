@@ -10,7 +10,7 @@ fn spawn_camera(mut commands: Commands) {
     commands.spawn((
         Name::new("Camera"),
         Camera3dBundle {
-            transform: Transform::from_xyz(-3.0, 3.0, 10.0),
+            transform: Transform::from_xyz(0.0, 2.1, 1.0),
             ..Default::default()
         },
         IsDefaultUiCamera,

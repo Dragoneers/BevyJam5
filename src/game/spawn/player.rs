@@ -19,19 +19,23 @@ pub struct Player;
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
 ) {
-    let arm = meshes.add(Cuboid::new(0.1, 0.1, 1.0));
-    let arm_material = materials.add(Color::from(tailwind::TEAL_200));
+    commands.spawn(DirectionalLightBundle {
+        directional_light: DirectionalLight {
+            shadows_enabled: true,
+            illuminance: 50000.,
+            ..Default::default()
+        },
+        ..default()
+    });
 
     commands.spawn((
         Name::new("Player"),
         Player,
-        MaterialMeshBundle {
-            mesh: arm,
-            material: arm_material,
-            transform: Transform::from_xyz(0.0, -0.0, -0.0),
+        SceneBundle {
+            scene: asset_server.load("models/chopper_motorbike.glb#Scene0"),
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
         },
         StateScoped(Screen::Playing),

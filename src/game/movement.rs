@@ -24,10 +24,10 @@ pub(super) fn plugin(app: &mut App) {
 /// one unit is one pixel, you can think of this as
 /// "How many pixels per second should the player move?"
 /// Note that physics engines may use different unit/pixel ratios.
-const MOVEMENT_SPEED: f32 = 1.0;
+const MOVEMENT_SPEED: f32 = 4.0;
 
 /// Camera lerp factor.
-const CAM_LERP_FACTOR: f32 = 1.5;
+const CAM_LERP_FACTOR: f32 = 0.01;
 
 /// Time between walk sound effects.
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
@@ -52,6 +52,29 @@ fn handle_player_movement_input(
     }
     if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
         intent.x += 1.0;
+    }
+
+    // Rotation of the object
+    if input.just_pressed(KeyCode::KeyA) {
+        for (mut transform) in &mut player_query {
+            transform.rotate_z(0.1);
+        }
+    }
+    if input.just_released(KeyCode::KeyA) {
+        for (mut transform) in &mut player_query {
+            transform.rotate_z(-0.1);
+        }
+    }
+
+    if input.just_pressed(KeyCode::KeyD) {
+        for (mut transform) in &mut player_query {
+            transform.rotate_z(-0.1);
+        }
+    }
+    if input.just_released(KeyCode::KeyD) {
+        for (mut transform) in &mut player_query {
+            transform.rotate_z(0.1);
+        }
     }
     // Need to normalize and scale because otherwise
     // diagonal movement would be faster than horizontal or vertical movement.
@@ -86,17 +109,21 @@ fn update_camera(
     println!("{:?}", player.translation);
 
     let Vec3 { x, y, z } = player.translation;
-    let direction = Vec3::new(x, y + 0.1, z + 1.0);
+    let direction = Vec3::new(x, y + 2.1, z + 1.0);
 
     // Applies a smooth effect to camera movement using interpolation between
     // the camera position and the player position on the x and y axes.
     // Here we use the in-game time, to get the elapsed time (in seconds)
     // since the previous update. This avoids jittery movement when tracking
     // the player.
+    /*
     camera.translation = camera
         .translation
         .lerp(direction, time.delta_seconds() * CAM_LERP_FACTOR);
     camera.scale = Vec3::splat(
         ((direction.distance_squared(camera.translation) / 100000.0).clamp(0.0, 1.2) + 1.0) * 6.,
     );
+    */
+
+    camera.translation = direction;
 }

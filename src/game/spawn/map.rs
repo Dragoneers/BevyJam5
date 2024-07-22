@@ -22,7 +22,7 @@ fn spawn_map(_trigger: Trigger<SpawnMap>, mut commands: Commands) {
     /* Create the bouncing ball. */
     commands
         .spawn((RigidBody::Dynamic, StateScoped(Screen::Playing)))
-        .insert(Collider::ball(0.5))
+        .insert(Collider::ball(2.0))
         .insert(Restitution::coefficient(0.7))
-        .insert(TransformBundle::from(Transform::from_xyz(0.0, 16.0, 0.0)));
+        .insert(TransformBundle::from(Transform::from_xyz(0.0, 16.0, -10.0)));
 }
