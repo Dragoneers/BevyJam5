@@ -1,5 +1,4 @@
 //! Spawn the player.
-use bevy::color::palettes::tailwind;
 use bevy::prelude::*;
 
 use crate::screen::Screen;
