@@ -24,7 +24,7 @@ pub(super) fn plugin(app: &mut App) {
 /// one unit is one pixel, you can think of this as
 /// "How many pixels per second should the player move?"
 /// Note that physics engines may use different unit/pixel ratios.
-const MOVEMENT_SPEED: f32 = 20.0;
+const MOVEMENT_SPEED: f32 = 50.0;
 
 /// Time between walk sound effects.
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
@@ -34,6 +34,7 @@ fn handle_player_movement_input(
     time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
     mut player_query: Query<&mut Transform, With<Player>>,
+    mut camera: Query<&mut Transform, (With<IsDefaultUiCamera>, Without<Player>)>,
     mut last_sfx: Local<Duration>,
     mut commands: Commands,
 ) {
@@ -42,40 +43,56 @@ fn handle_player_movement_input(
         intent.z -= 1.0;
     }
     if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
-        intent.z += 1.0;
+        intent.z += 0.5;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
-        intent.x -= 1.0;
+        intent.x -= 0.8;
     }
     if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
-        intent.x += 1.0;
+        intent.x += 0.8;
     }
 
     // Rotation of the object
     if input.just_pressed(KeyCode::KeyA) {
         for mut transform in &mut player_query {
-            transform.rotate_z(0.1);
+            transform.rotate_z(0.15);
+        }
+
+        for mut transform in &mut camera {
+            transform.rotate_z(0.05);
         }
     }
     if input.just_released(KeyCode::KeyA) {
         for mut transform in &mut player_query {
-            transform.rotate_z(-0.1);
+            transform.rotate_z(-0.15);
+        }
+
+        for mut transform in &mut camera {
+            transform.rotate_z(-0.05);
         }
     }
 
     if input.just_pressed(KeyCode::KeyD) {
         for mut transform in &mut player_query {
-            transform.rotate_z(-0.1);
+            transform.rotate_z(-0.15);
+        }
+
+        for mut transform in &mut camera {
+            transform.rotate_z(-0.05);
         }
     }
     if input.just_released(KeyCode::KeyD) {
         for mut transform in &mut player_query {
-            transform.rotate_z(0.1);
+            transform.rotate_z(0.15);
+        }
+
+        for mut transform in &mut camera {
+            transform.rotate_z(0.05);
         }
     }
     // Need to normalize and scale because otherwise
     // diagonal movement would be faster than horizontal or vertical movement.
-    let intent = intent.normalize_or_zero();
+    //let intent = intent.normalize_or_zero();
     let target_velocity = intent * MOVEMENT_SPEED;
 
     for mut transform in &mut player_query {
@@ -105,7 +122,7 @@ fn update_camera(
     println!("{:?}", player.translation);
 
     let Vec3 { x, y, z } = player.translation;
-    let direction = Vec3::new(x, y + 2.1, z + 1.0);
+    let direction = Vec3::new(x, y + 2.3, z + 1.1);
 
     camera.translation = direction;
 }
