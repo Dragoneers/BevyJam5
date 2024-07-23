@@ -1,5 +1,6 @@
 //! Spawn the player.
 use bevy::prelude::*;
+use bevy_rapier3d::prelude::*;
 
 use crate::screen::Screen;
 
@@ -38,5 +39,9 @@ fn spawn_player(
             ..default()
         },
         StateScoped(Screen::Playing),
+        RigidBody::Dynamic,
+        Collider::cuboid(0.5, 0.5, 0.5),
+        Velocity::zero(),
+        LockedAxes::ROTATION_LOCKED,
     ));
 }
