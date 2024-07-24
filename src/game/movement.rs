@@ -5,8 +5,8 @@
 
 use std::time::Duration;
 
-use bevy::prelude::*;
 use super::{audio::sfx::Sfx, spawn::player::*, GameSystem};
+use bevy::prelude::*;
 
 //OLM AYRISINIZ LAN SİZ
 
@@ -42,16 +42,15 @@ fn handle_player_movement_input(
     let mut intent = Vec3::ZERO;
     if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
         intent.z -= 1.5;
-
     }
     if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
         intent.z += 0.4;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
-        intent.x += 0.4*intent.z;
+        intent.x += 0.4 * intent.z;
     }
     if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
-        intent.x -= 0.4*intent.z;
+        intent.x -= 0.4 * intent.z;
     }
 
     // Rotation of the object
@@ -97,12 +96,10 @@ fn handle_player_movement_input(
     //let intent = intent.normalize_or_zero();
     let mut target_velocity: Vec3 = Vec3::ZERO;
     for mut bike in &mut player_query {
-        bike.1.speed += bike.1.accel * time.delta_seconds()*intent.z;
-        bike.1.speed*=0.995;
-        target_velocity = intent.with_z(bike.1.speed).with_x(-intent.x*bike.1.speed);
-        info!("{},{:?}", target_velocity, bike.1.speed);
+        bike.1.speed += bike.1.accel * time.delta_seconds() * intent.z;
+        bike.1.speed *= 0.995;
+        target_velocity = intent.with_z(bike.1.speed).with_x(-intent.x * bike.1.speed);
     }
-
 
     for mut transform in &mut player_query {
         transform.0.translation += target_velocity * time.delta_seconds();
@@ -127,8 +124,6 @@ fn update_camera(
     let Ok(player) = player.get_single() else {
         return;
     };
-
-    println!("{:?}", player.translation);
 
     let Vec3 { x, y, z } = player.translation;
     let direction = Vec3::new(x, y + 2.3, z + 1.1);
