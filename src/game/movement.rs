@@ -9,6 +9,8 @@ use bevy::prelude::*;
 
 use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 
+//OLM AYRISINIZ LAN SİZ
+
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
