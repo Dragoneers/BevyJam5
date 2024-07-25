@@ -1021,6 +1021,7 @@ dependencies = [
  "bevy",
  "bevy_rapier3d",
  "log",
+ "noiselib",
  "rand",
 ]
 
@@ -2686,6 +2687,12 @@ dependencies = [
  "cfg_aliases 0.2.1",
  "libc",
 ]
+
+[[package]]
+name = "noiselib"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f417c7f81894f619dd70f6b685cdcabd5e08c692df35a7a938aab3ca3e5a4c0"
 
 [[package]]
 name = "nom"
