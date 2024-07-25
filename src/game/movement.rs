@@ -6,7 +6,6 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-
 use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
 
 //OLM AYRISINIZ LAN SİZ
@@ -48,10 +47,10 @@ fn handle_player_movement_input(
         intent.z += 0.5;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
-        intent.x -= 0.8;
+        intent.x += 0.4*intent.z;
     }
     if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
-        intent.x += 0.8;
+        intent.x -= 0.4*intent.z;
     }
 
     // Rotation of the object
