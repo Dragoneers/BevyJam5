@@ -16,6 +16,13 @@ pub struct SpawnPlayer;
 #[reflect(Component)]
 pub struct Player;
 
+#[derive(Component)]
+pub struct Bike {
+    pub(crate) speed: f32,
+    pub(crate) accel: f32,
+    pub(crate) top_speed: f32,
+}
+
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
@@ -37,6 +44,11 @@ fn spawn_player(
             scene: asset_server.load("models/chopper_motorbike.glb#Scene0"),
             transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
+        },
+        Bike {
+            speed: 0.0,
+            top_speed: 60.0,
+            accel: 30.0,
         },
         StateScoped(Screen::Playing),
         RigidBody::KinematicVelocityBased,

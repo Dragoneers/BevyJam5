@@ -6,7 +6,7 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use super::{audio::sfx::Sfx, spawn::player::Player, GameSystem};
+use super::{audio::sfx::Sfx, spawn::player::*, GameSystem};
 
 //OLM AYRISINIZ LAN SİZ
 
@@ -25,7 +25,7 @@ pub(super) fn plugin(app: &mut App) {
 /// one unit is one pixel, you can think of this as
 /// "How many pixels per second should the player move?"
 /// Note that physics engines may use different unit/pixel ratios.
-const MOVEMENT_SPEED: f32 = 50.0;
+const ACCEL: f32 = 50.0;
 
 /// Time between walk sound effects.
 const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
@@ -34,17 +34,18 @@ const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
 fn handle_player_movement_input(
     time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<&mut Transform, With<Player>>,
+    mut player_query: Query<(&mut Transform, &mut Bike), With<Player>>,
     mut camera: Query<&mut Transform, (With<IsDefaultUiCamera>, Without<Player>)>,
     mut last_sfx: Local<Duration>,
     mut commands: Commands,
 ) {
     let mut intent = Vec3::ZERO;
     if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
-        intent.z -= 1.0;
+        intent.z -= 1.5;
+
     }
     if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
-        intent.z += 0.5;
+        intent.z += 0.4;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
         intent.x += 0.4*intent.z;
@@ -56,7 +57,7 @@ fn handle_player_movement_input(
     // Rotation of the object
     if input.just_pressed(KeyCode::KeyA) {
         for mut transform in &mut player_query {
-            transform.rotate_z(0.15);
+            transform.0.rotate_z(0.15);
         }
 
         for mut transform in &mut camera {
@@ -65,7 +66,7 @@ fn handle_player_movement_input(
     }
     if input.just_released(KeyCode::KeyA) {
         for mut transform in &mut player_query {
-            transform.rotate_z(-0.15);
+            transform.0.rotate_z(-0.15);
         }
 
         for mut transform in &mut camera {
@@ -75,7 +76,7 @@ fn handle_player_movement_input(
 
     if input.just_pressed(KeyCode::KeyD) {
         for mut transform in &mut player_query {
-            transform.rotate_z(-0.15);
+            transform.0.rotate_z(-0.15);
         }
 
         for mut transform in &mut camera {
@@ -84,7 +85,7 @@ fn handle_player_movement_input(
     }
     if input.just_released(KeyCode::KeyD) {
         for mut transform in &mut player_query {
-            transform.rotate_z(0.15);
+            transform.0.rotate_z(0.15);
         }
 
         for mut transform in &mut camera {
@@ -94,10 +95,17 @@ fn handle_player_movement_input(
     // Need to normalize and scale because otherwise
     // diagonal movement would be faster than horizontal or vertical movement.
     //let intent = intent.normalize_or_zero();
-    let target_velocity = intent * MOVEMENT_SPEED;
+    let mut target_velocity: Vec3 = Vec3::ZERO;
+    for mut bike in &mut player_query {
+        bike.1.speed += bike.1.accel * time.delta_seconds()*intent.z;
+        bike.1.speed*=0.995;
+        target_velocity = intent.with_z(bike.1.speed).with_x(-intent.x*bike.1.speed);
+        info!("{},{:?}", target_velocity, bike.1.speed);
+    }
+
 
     for mut transform in &mut player_query {
-        transform.translation += target_velocity * time.delta_seconds();
+        transform.0.translation += target_velocity * time.delta_seconds();
     }
 
     // If the player is moving, play a step sound effect.
