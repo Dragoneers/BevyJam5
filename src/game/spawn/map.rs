@@ -105,5 +105,5 @@ fn generate_cycle_walls(
 
     let collider = Collider::trimesh(verticies.collect(), indices.collect());
 
-    commands.spawn((RigidBody::KinematicVelocityBased, collider));
+    commands.spawn((RigidBody::Fixed, collider));
 }

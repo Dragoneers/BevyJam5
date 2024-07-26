@@ -7,6 +7,7 @@ use std::time::Duration;
 
 use super::{audio::sfx::Sfx, spawn::player::*, GameSystem};
 use bevy::prelude::*;
+use bevy_rapier3d::dynamics::Velocity;
 
 //OLM AYRISINIZ LAN SİZ
 
@@ -34,7 +35,7 @@ const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
 fn handle_player_movement_input(
     time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
-    mut player_query: Query<(&mut Transform, &mut Bike), With<Player>>,
+    mut player_query: Query<(&mut Transform, &mut Bike, &mut Velocity), With<Player>>,
     mut camera: Query<&mut Transform, (With<IsDefaultUiCamera>, Without<Player>)>,
     mut last_sfx: Local<Duration>,
     mut commands: Commands,
@@ -101,8 +102,8 @@ fn handle_player_movement_input(
         target_velocity = intent.with_z(bike.1.speed).with_x(-intent.x * bike.1.speed);
     }
 
-    for mut transform in &mut player_query {
-        transform.0.translation += target_velocity * time.delta_seconds();
+    for (_transform, _bike, mut velocity) in &mut player_query {
+        velocity.linvel = target_velocity;
     }
 
     // If the player is moving, play a step sound effect.

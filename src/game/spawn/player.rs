@@ -51,9 +51,11 @@ fn spawn_player(
             accel: 30.0,
         },
         StateScoped(Screen::Playing),
-        RigidBody::KinematicVelocityBased,
+        RigidBody::Dynamic,
+        Velocity::zero(),
+        Sleeping::disabled(),
         Collider::cuboid(1.2, 1.85, 3.5),
-        LockedAxes::ROTATION_LOCKED,
+        LockedAxes::ROTATION_LOCKED.union(LockedAxes::TRANSLATION_LOCKED_Y),
         KinematicCharacterController {
             snap_to_ground: Some(CharacterLength::Relative(0.5)),
             apply_impulse_to_dynamic_bodies: true,
