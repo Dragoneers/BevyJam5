@@ -26,6 +26,7 @@ pub struct Bike {
 fn spawn_player(
     _trigger: Trigger<SpawnPlayer>,
     mut commands: Commands,
+    mut camera: Query<Entity, (With<IsDefaultUiCamera>)>,
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(DirectionalLightBundle {
@@ -61,5 +62,5 @@ fn spawn_player(
             apply_impulse_to_dynamic_bodies: true,
             ..default()
         },
-    ));
+    )).add_child(camera.get_single().unwrap());
 }

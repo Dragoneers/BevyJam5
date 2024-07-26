@@ -16,7 +16,7 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         (
             handle_player_movement_input.in_set(GameSystem::Movement),
-            update_camera,
+            //update_camera,
         )
             .chain(),
     );
@@ -114,20 +114,20 @@ fn handle_player_movement_input(
     }
 }
 
-fn update_camera(
-    mut camera: Query<&mut Transform, (With<IsDefaultUiCamera>, Without<Player>)>,
-    player: Query<&Transform, (With<Player>, Without<Camera3d>)>,
-) {
-    let Ok(mut camera) = camera.get_single_mut() else {
-        return;
-    };
-
-    let Ok(player) = player.get_single() else {
-        return;
-    };
-
-    let Vec3 { x, y, z } = player.translation;
-    let direction = Vec3::new(x, y + 2.3, z + 1.1);
-
-    camera.translation = direction;
-}
+// fn update_camera(
+//     mut camera: Query<&mut Transform, (With<IsDefaultUiCamera>, Without<Player>)>,
+//     player: Query<&Transform, (With<Player>, Without<Camera3d>)>,
+// ) {
+//     let Ok(mut camera) = camera.get_single_mut() else {
+//         return;
+//     };
+//
+//     let Ok(player) = player.get_single() else {
+//         return;
+//     };
+//
+//     let Vec3 { x, y, z } = player.translation;
+//     let direction = Vec3::new(x, y + 2.3, z + 1.1);
+//
+//     camera.translation = direction;
+// }
