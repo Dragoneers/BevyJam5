@@ -20,7 +20,7 @@ pub struct Player;
 pub struct Bike {
     pub(crate) speed: f32,
     pub(crate) accel: f32,
-    pub(crate) top_speed: f32,
+    pub(crate) drag: f32,
 }
 
 fn spawn_player(
@@ -48,7 +48,7 @@ fn spawn_player(
         },
         Bike {
             speed: 0.0,
-            top_speed: 60.0,
+            drag: 0.5,
             accel: 30.0,
         },
         StateScoped(Screen::Playing),
@@ -56,7 +56,7 @@ fn spawn_player(
         Velocity::zero(),
         Sleeping::disabled(),
         Collider::cuboid(1.2, 1.85, 3.5),
-        LockedAxes::ROTATION_LOCKED.union(LockedAxes::TRANSLATION_LOCKED_Y),
+        //LockedAxes::ROTATION_LOCKED.union(LockedAxes::TRANSLATION_LOCKED_Y),
         KinematicCharacterController {
             snap_to_ground: Some(CharacterLength::Relative(0.5)),
             apply_impulse_to_dynamic_bodies: true,

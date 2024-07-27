@@ -3,6 +3,7 @@
 //! If you want to move the player in a smoother way,
 //! consider using a [fixed timestep](https://github.com/bevyengine/bevy/pull/14223).
 
+use std::ops::Mul;
 use std::time::Duration;
 
 use super::{audio::sfx::Sfx, spawn::player::*, GameSystem};
@@ -96,14 +97,15 @@ fn handle_player_movement_input(
     // diagonal movement would be faster than horizontal or vertical movement.
     //let intent = intent.normalize_or_zero();
     let mut target_velocity: Vec3 = Vec3::ZERO;
-    for mut bike in &mut player_query {
-        bike.1.speed += bike.1.accel * time.delta_seconds() * intent.z;
-        bike.1.speed *= 0.995;
-        target_velocity = intent.with_z(bike.1.speed).with_x(-intent.x * bike.1.speed);
+    for (transform, mut bike, _) in &mut player_query {
+        bike.speed += bike.accel * time.delta_seconds() * intent.z;
+        bike.speed *= 1.0-bike.drag*time.delta_seconds();
+        target_velocity = transform.rotation.mul_vec3(intent.with_z(bike.speed).with_x(-intent.x * bike.speed));
     }
 
     for (_transform, _bike, mut velocity) in &mut player_query {
         velocity.linvel = target_velocity;
+        velocity.angvel = Vec3::ZERO.with_y(-target_velocity.x/30.0);
     }
 
     // If the player is moving, play a step sound effect.
