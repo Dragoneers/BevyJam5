@@ -29,7 +29,7 @@ pub(super) fn plugin(app: &mut App) {
 const ACCEL: f32 = 50.0;
 
 /// Time between walk sound effects.
-const STEP_SFX_INTERVAL: Duration = Duration::from_millis(250);
+const STEP_SFX_INTERVAL: Duration = Duration::from_millis(2000);
 
 /// Handle keyboard input to move the player.
 fn handle_player_movement_input(
