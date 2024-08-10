@@ -37,7 +37,7 @@ fn spawn_map(spawn_trigger: Trigger<SpawnMap>, mut commands: Commands) {
     /* Create the ground. */
     commands
         .spawn((
-            Collider::cuboid(100.0, 0.1, 100.0),
+            Collider::cuboid(10000.0, 0.1, 10000.0),
             StateScoped(Screen::Playing),
         ))
         .insert(TransformBundle::from(Transform::from_xyz(0.0, -2.0, 0.0)));

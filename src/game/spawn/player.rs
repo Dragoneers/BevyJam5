@@ -21,6 +21,7 @@ pub struct Bike {
     pub(crate) speed: f32,
     pub(crate) accel: f32,
     pub(crate) drag: f32,
+    pub(crate) crash_time: f32,
 }
 
 fn spawn_player(
@@ -50,6 +51,7 @@ fn spawn_player(
             speed: 0.0,
             drag: 0.5,
             accel: 30.0,
+            crash_time: -1.0,
         },
         StateScoped(Screen::Playing),
         RigidBody::Dynamic,
@@ -62,5 +64,5 @@ fn spawn_player(
             apply_impulse_to_dynamic_bodies: true,
             ..default()
         },
-    )).add_child(camera.get_single().unwrap());
+    )).insert(GravityScale(1.0)).add_child(camera.get_single().unwrap());
 }

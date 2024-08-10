@@ -49,64 +49,63 @@ fn handle_player_movement_input(
         intent.z += 0.4;
     }
     if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
-        intent.x += 0.4 * intent.z;
+        intent.x += 0.4;
     }
     if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
-        intent.x -= 0.4 * intent.z;
+        intent.x -= 0.4;
     }
 
     // Rotation of the object
     if input.just_pressed(KeyCode::KeyA) {
         for mut transform in &mut player_query {
-            transform.0.rotate_z(0.15);
-        }
-
-        for mut transform in &mut camera {
-            transform.rotate_z(0.05);
-        }
-    }
-    if input.just_released(KeyCode::KeyA) {
-        for mut transform in &mut player_query {
-            transform.0.rotate_z(-0.15);
+            //transform.0.rotate_z(0.15);
         }
 
         for mut transform in &mut camera {
             transform.rotate_z(-0.05);
+        }
+    }
+    if input.just_released(KeyCode::KeyA) {
+        for mut transform in &mut player_query {
+            //transform.0.rotate_z(-0.15);
+        }
+
+        for mut transform in &mut camera {
+            transform.rotate_z(0.05);
         }
     }
 
     if input.just_pressed(KeyCode::KeyD) {
         for mut transform in &mut player_query {
-            transform.0.rotate_z(-0.15);
-        }
-
-        for mut transform in &mut camera {
-            transform.rotate_z(-0.05);
-        }
-    }
-    if input.just_released(KeyCode::KeyD) {
-        for mut transform in &mut player_query {
-            transform.0.rotate_z(0.15);
+            //transform.0.rotate_z(-0.15);
         }
 
         for mut transform in &mut camera {
             transform.rotate_z(0.05);
+        }
+    }
+    if input.just_released(KeyCode::KeyD) {
+        for mut transform in &mut player_query {
+            //transform.0.rotate_z(0.15);
+        }
+
+        for mut transform in &mut camera {
+            transform.rotate_z(-0.05);
         }
     }
     // Need to normalize and scale because otherwise
     // diagonal movement would be faster than horizontal or vertical movement.
     //let intent = intent.normalize_or_zero();
     let mut target_velocity: Vec3 = Vec3::ZERO;
-    for (transform, mut bike, _) in &mut player_query {
+    for (transform, mut bike, mut velocity) in &mut player_query {
         bike.speed += bike.accel * time.delta_seconds() * intent.z;
         bike.speed *= 1.0-bike.drag*time.delta_seconds();
-        target_velocity = transform.rotation.mul_vec3(intent.with_z(bike.speed).with_x(-intent.x * bike.speed));
+        velocity.angvel = Vec3::ZERO.with_y(intent.x).with_z(-transform.rotation.z*4.0);
+        target_velocity = transform.rotation.mul_vec3(intent.with_z(bike.speed));
+        velocity.linvel = target_velocity.with_y(-transform.translation.y/40.0);
+        println!("{:?}", transform.rotation.z);
     }
 
-    for (_transform, _bike, mut velocity) in &mut player_query {
-        velocity.linvel = target_velocity;
-        velocity.angvel = Vec3::ZERO.with_y(-target_velocity.x/30.0);
-    }
 
     // If the player is moving, play a step sound effect.
     let now = time.elapsed();
